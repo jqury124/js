@@ -1,76 +1,59 @@
 (function() {
+    // Sitenin diğer kodlarıyla ÇAKIŞMAMASI için tüm işlem izole bir alanda yapılıyor.
+    
     const styles = `
         #custom-network-bar {
-            width: 160px; /* Genişlik 160px */
-            height: 600px; /* Yükseklik 600px */
-            display: block;
-            z-index: 99999;
-            position: fixed; /* Ekranda sabit */
-            top: 50%; /* Dikeyde ortala */
-            left: 0; /* Ekranın soluna yasla */
+            width: 100%;
+            max-width: 160px;
+            height: 600px;
             background: linear-gradient(180deg, #000 0%, #1a1a1a 50%, #000 100%);
-            border-right: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 4px 0 10px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.4s ease-in-out;
-            transform: translateY(-50%);
-            border-radius: 0 10px 10px 0; /* Sağ köşelere hafif kavis */
-        }
-
-        #custom-network-bar.hide-animated {
-            transform: translate(-100%, -50%); /* Kapatınca sola doğru kaybolur */
-            opacity: 0;
-        }
-
-        #custom-network-bar .network-inner {
-            display: flex;
-            flex-direction: column; /* İçerikleri alt alta diz */
-            align-items: center;
-            height: 100%;
-            padding: 15px 0;
-            max-width: 100%;
-            overflow: hidden;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
         }
-
+        #custom-network-bar.hide-animated {
+            opacity: 0;
+            pointer-events: none;
+        }
         #custom-network-bar .brand-logo {
-            font-size: 13px; /* Dikey alana sığması için küçültüldü */
+            font-size: 13px;
             font-weight: 900;
             text-transform: uppercase;
             font-style: italic;
             letter-spacing: 0.5px;
-            margin-bottom: 10px; /* Alt boşluk */
+            margin-bottom: 10px;
             text-align: center;
             background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
             background-size: 400% auto;
             -webkit-background-clip: text;
             text-fill-color: transparent;
             -webkit-text-fill-color: transparent;
-            white-space: normal; /* Uzun metni alt satıra at */
+            white-space: normal;
             cursor: pointer;
             animation: rainbowMove 3s linear infinite;
             padding: 0 10px;
         }
-
-        @keyframes rainbowMove {
-            0% { background-position: 0% center; }
-            100% { background-position: 400% center; }
-        }
-
+        @keyframes rainbowMove { 0% { background-position: 0% center; } 100% { background-position: 400% center; } }
         #custom-network-bar .divider {
-            width: 80%; /* Çizgi artık yatay */
+            width: 80%;
             height: 1px;
             background: rgba(255,255,255,0.2);
             margin: 10px 0;
             flex-shrink: 0;
         }
-
         #custom-network-bar .network-links {
             display: flex;
-            flex-direction: column; /* Linkleri alt alta yap */
+            flex-direction: column;
             align-items: center;
             gap: 10px;
-            overflow-y: auto; /* Dikey kaydırma */
+            overflow-y: auto;
             overflow-x: hidden;
             width: 100%;
             flex: 1;
@@ -79,16 +62,12 @@
             padding: 0 10px;
             box-sizing: border-box;
         }
-
-        #custom-network-bar .network-links::-webkit-scrollbar {
-            display: none;  
-        }
-
+        #custom-network-bar .network-links::-webkit-scrollbar { display: none; }
         #custom-network-bar .net-btn {
             text-decoration: none;
             color: #fff;
             font-weight: 700;
-            font-size: 11px; /* Genişliğe sığması için */
+            font-size: 11px;
             padding: 8px 10px;
             border-radius: 50px;
             background: rgba(255, 255, 255, 0.1);
@@ -97,29 +76,25 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center; /* İkon ve metni ortala */
-            width: 100%; /* Kapsayıcıyı doldur */
+            justify-content: center;
+            width: 100%;
             box-sizing: border-box;
             gap: 6px;
         }
-
         #custom-network-bar .net-btn:hover {
             transform: scale(1.05);
             background: #fff;
             color: #000;
             box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
-
         #custom-network-bar .net-btn.blue { background: rgba(0, 210, 255, 0.15); border-color: rgba(0, 210, 255, 0.3); }
         #custom-network-bar .net-btn.orange { background: rgba(255, 80, 0, 0.15); border-color: rgba(255, 80, 0, 0.3); }
         #custom-network-bar .net-btn.green { background: rgba(0, 255, 100, 0.15); border-color: rgba(0, 255, 100, 0.3); }
         #custom-network-bar .net-btn.purple { background: rgba(180, 0, 255, 0.15); border-color: rgba(180, 0, 255, 0.3); }
-
         #custom-network-bar .net-btn.blue:hover { background: #00d2ff; color: #fff; box-shadow: 0 0 15px #00d2ff; }
         #custom-network-bar .net-btn.orange:hover { background: #ff5e00; color: #fff; box-shadow: 0 0 15px #ff5e00; }
         #custom-network-bar .net-btn.green:hover { background: #00ff6a; color: #000; box-shadow: 0 0 15px #00ff6a; }
         #custom-network-bar .net-btn.purple:hover { background: #aa00ff; color: #fff; box-shadow: 0 0 15px #aa00ff; }
-
         .net-close-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
@@ -131,7 +106,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            margin-top: 10px; /* Boşluk üste alındı */
+            margin-top: 10px;
             font-weight: bold;
             font-size: 12px;
             transition: all 0.2s ease;
@@ -142,18 +117,141 @@
             border-color: #ff0055;
             transform: scale(1.1);
         }
-
         #floating-wrapper {
             position: fixed;
             bottom: 25px;
             right: 25px;
             z-index: 999999;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transition: all 0.4s ease;
         }
-
         #floating-wrapper.hide-animated {
-            transform: scale(0) rotate(15deg);
+            transform: scale(0);
             opacity: 0;
         }
+        #floating-agarlive-btn {
+            background: linear-gradient(135deg, #ff0055, #ffaa00);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #floating-agarlive-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 170, 0, 0.6);
+            color: white;
+        }
+        .float-close-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #222;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .float-close-btn:hover {
+            background: #ff0055;
+            transform: scale(1.2);
+        }
+    `;
 
-        #floating
+    const bannerHtml = `
+        <div id="custom-network-bar">
+            <div class="brand-logo" onclick="window.scrollTo(0,0)">ALT SİTELER »</div>
+            <div class="divider"></div>
+            <div class="network-links">
+                <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
+                <a href="https://agarlive.site" target="_blank" class="net-btn"><span>⚽</span> AGARIO</a>
+                <a href="https://edujojo.live/" target="_blank" class="net-btn green"><span>🚀</span> Edu Live</a>
+                <a href="https://edujojo.website/" target="_blank" class="net-btn orange"><span>🔥</span> Edu Web</a>
+                <a href="https://edujojo.site" target="_blank" class="net-btn blue"><span>🎮</span> Edu Site</a> 
+                <a href="https://edujojo.online/" target="_blank" class="net-btn blue"><span>📚</span> Edu Online</a>
+                <a href="https://edujojo.space/" target="_blank" class="net-btn green"><span>🧩</span> Edu Space</a>
+                <a href="https://edujojo.top/" target="_blank" class="net-btn purple"><span>💎</span> Edu Top</a>
+                <a href="https://classnotes30.online/" target="_blank" class="net-btn"><span>⚽</span> Class 30</a>
+                <a href="https://classnotes50.online/" target="_blank" class="net-btn orange"><span>🎬</span> Class 50</a>
+            </div>
+            <div class="divider"></div>
+            <div class="net-close-btn" id="close-topbar" title="Kapat">✖</div>
+        </div>
+    `;
+
+    const floatingHtml = `
+        <div id="floating-wrapper">
+            <div class="float-close-btn" id="close-floating" title="Kapat">✖</div>
+            <a id="floating-agarlive-btn" href="https://agarlive.site/" target="_blank"><span>⚔️</span> AGAR SITE</a>
+        </div>
+    `;
+
+    function buildNetworkBar() {
+        // 1. CSS'i Güvenlice Ekle
+        if (!document.getElementById('edujojo-network-styles')) {
+            const styleElement = document.createElement('style');
+            styleElement.id = 'edujojo-network-styles';
+            styleElement.innerHTML = styles;
+            document.head.appendChild(styleElement);
+        }
+
+        // 2. Sol Reklam Kutusunu Bul ve HTML'i Bas (BURASI GÜNCELLENDİ)
+        const targetDiv = document.getElementById("network-bar");
+        if (targetDiv && !document.getElementById('custom-network-bar')) {
+            targetDiv.innerHTML = bannerHtml;
+        }
+
+        // 3. Sağ Alt Yüzen Butonu Body'ye Bas
+        if (!document.getElementById('floating-wrapper')) {
+            document.body.insertAdjacentHTML('beforeend', floatingHtml);
+        }
+
+        // 4. Tıklama (Kapatma) Olaylarını Ayarla
+        const topBarClose = document.getElementById('close-topbar');
+        if (topBarClose) {
+            topBarClose.addEventListener('click', function() {
+                const topBar = document.getElementById('custom-network-bar');
+                if (topBar) {
+                    topBar.classList.add('hide-animated');
+                    setTimeout(() => topBar.style.display = 'none', 300);
+                }
+            });
+        }
+
+        const floatingClose = document.getElementById('close-floating');
+        if (floatingClose) {
+            floatingClose.addEventListener('click', function(e) {
+                e.preventDefault();
+                const floatBtn = document.getElementById('floating-wrapper');
+                if (floatBtn) {
+                    floatBtn.classList.add('hide-animated');
+                    setTimeout(() => floatBtn.style.display = 'none', 300);
+                }
+            });
+        }
+    }
+
+    // DomContentLoaded'i bekle, sayfa zaten yüklendiyse direkt çalıştır
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', buildNetworkBar);
+    } else {
+        buildNetworkBar();
+    }
+
+})();

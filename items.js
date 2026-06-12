@@ -1,5 +1,5 @@
 (function() {
-    // Sitenin diğer kodlarıyla ÇAKIŞMAMASI için tüm işlem izole bir alanda yapılıyor.
+
     
     const styles = `
         #custom-network-bar {
@@ -176,7 +176,7 @@
 
     const bannerHtml = `
         <div id="custom-network-bar">
-            <div class="brand-logo" onclick="window.scrollTo(0,0)">ALT SİTELER »</div>
+            <div class="brand-logo" onclick="window.scrollTo(0,0)">ALT Sites »</div>
             <div class="divider"></div>
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
@@ -203,7 +203,7 @@
     `;
 
     function buildNetworkBar() {
-        // 1. CSS'i Güvenlice Ekle
+       
         if (!document.getElementById('edujojo-network-styles')) {
             const styleElement = document.createElement('style');
             styleElement.id = 'edujojo-network-styles';
@@ -211,18 +211,18 @@
             document.head.appendChild(styleElement);
         }
 
-        // 2. Sol Reklam Kutusunu Bul ve HTML'i Bas (BURASI GÜNCELLENDİ)
+        
         const targetDiv = document.getElementById("network-bar");
         if (targetDiv && !document.getElementById('custom-network-bar')) {
             targetDiv.innerHTML = bannerHtml;
         }
 
-        // 3. Sağ Alt Yüzen Butonu Body'ye Bas
+       
         if (!document.getElementById('floating-wrapper')) {
             document.body.insertAdjacentHTML('beforeend', floatingHtml);
         }
 
-        // 4. Tıklama (Kapatma) Olaylarını Ayarla
+       
         const topBarClose = document.getElementById('close-topbar');
         if (topBarClose) {
             topBarClose.addEventListener('click', function() {
@@ -247,7 +247,7 @@
         }
     }
 
-    // DomContentLoaded'i bekle, sayfa zaten yüklendiyse direkt çalıştır
+   
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', buildNetworkBar);
     } else {

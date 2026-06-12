@@ -1,22 +1,32 @@
 (function() {
-    // 1. KÖTÜ KELİME FİLTRESİ (Burayı istediğin gibi genişlet)
-    const blockList = ["badword1", "badword2", "salak", "aptal", "küfür", "fuck", "shit", "bitch"];
+  
+    const blockList = [
+        "fuck", "shit", "bitch", "asshole", "dick", "pussy", "cunt", "slut", 
+        "whore", "fag", "faggot", "nigger", "nigga", "porn", "sex", "cock", 
+        "boobs", "vagina", "penis", "bastard", "crap", "damn", "kill", "suicide", 
+        "rape", "dumbass", "motherfucker", "wtf", "stfu", "lmao", "lmfao"
+    ];
 
     function cleanContent(text) {
         let safeText = text;
         blockList.forEach(word => {
-            const regex = new RegExp(word, "gi");
+            
+            const regex = new RegExp("\\b" + word + "\\b", "gi");
             safeText = safeText.replace(regex, "🍓🍓");
         });
         return safeText;
     }
 
-    // 2. GÖRÜNÜM (CSS VE HTML) - Okul filtreleri için "Chat" kelimesi KESİNLİKLE YOK
+   
     const styles = `
         #edu-stream-wrap {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999999;
             width: 100%;
-            max-width: 320px;
-            height: 400px;
+            max-width: 300px;
+            height: 380px;
             background: linear-gradient(180deg, #0a0b14 0%, #1a1a24 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
@@ -24,17 +34,39 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #edu-stream-wrap.closed {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
         }
         .stream-head {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 12px;
-            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-weight: 800;
             font-size: 14px;
             color: #fff;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             letter-spacing: 0.5px;
+        }
+        .stream-close-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 5px;
+            transition: transform 0.2s;
+        }
+        .stream-close-btn:hover {
+            transform: scale(1.2);
+            color: #ff0000;
         }
         .stream-body {
             flex: 1;
@@ -73,7 +105,7 @@
         .stream-foot {
             display: flex;
             padding: 10px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             gap: 8px;
         }
@@ -105,7 +137,10 @@
 
     const htmlContent = `
         <div id="edu-stream-wrap">
-            <div class="stream-head">📚 Live Class Notes</div>
+            <div class="stream-head">
+                <span>📚 Live Class Notes</span>
+                <button id="stream-close" class="stream-close-btn" title="Close">✖</button>
+            </div>
             <div id="stream-content" class="stream-body"></div>
             <div class="stream-foot">
                 <input type="text" id="stream-input" placeholder="Share a note..." maxlength="80" autocomplete="off">
@@ -114,24 +149,36 @@
         </div>
     `;
 
-    // 3. KURULUM VE FIREBASE BAĞLANTISI
+    
     function initSystem() {
-        // Hedef alanı bul
-        const targetDiv = document.getElementById("edu-live-stream-container");
-        if (!targetDiv) return;
+       
+        let targetDiv = document.getElementById("edu-live-stream-container");
+        if (!targetDiv) {
+            targetDiv = document.createElement("div");
+            targetDiv.id = "edu-live-stream-container";
+            document.body.appendChild(targetDiv);
+        }
 
-        // Stilleri ve HTML'i ekle
+       
         const styleTag = document.createElement("style");
         styleTag.innerHTML = styles;
         document.head.appendChild(styleTag);
         targetDiv.innerHTML = htmlContent;
 
+        const wrapBox = document.getElementById('edu-stream-wrap');
+        const closeBtn = document.getElementById('stream-close');
         const feedArea = document.getElementById('stream-content');
         const inputField = document.getElementById('stream-input');
         const postBtn = document.getElementById('stream-btn');
         let isWaiting = false;
 
-        // Firebase Config (Senin verdiğin altın anahtar)
+        
+        closeBtn.addEventListener('click', () => {
+            wrapBox.classList.add('closed');
+            setTimeout(() => { wrapBox.style.display = 'none'; }, 300);
+        });
+
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDlCbxHH6FlZuqmQazSFKDdQAHXyoDdTFw",
             authDomain: "edu-sync-core.firebaseapp.com",
@@ -142,28 +189,33 @@
             appId: "1:517224017676:web:6794a8f2d8a9ba4de52329"
         };
 
-        // Kendi oturumumuz için rastgele ID (Kendi yazdıklarını sağda görmek için)
         const mySessionId = Math.random().toString(36).substr(2, 9);
-
-        // Firebase'i Başlat
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const notesRef = db.ref('shared-notes'); // Veritabanındaki tablo adı
+        const notesRef = db.ref('shared-notes');
 
-        // Veritabanına Yeni Veri Ekleme (POST işlemi)
+        
+      
+        const twelveHoursInMs = 12 * 60 * 60 * 1000;
+        const cutoffTime = Date.now() - twelveHoursInMs;
+        
+        notesRef.orderByChild('timestamp').endAt(cutoffTime).once('value', (snapshot) => {
+            snapshot.forEach((child) => {
+                child.ref.remove();  
+            });
+        });
+       
+
+      
         function publishNote() {
             const rawVal = inputField.value.trim();
             if (rawVal === "" || isWaiting) return;
 
-            // Filtreden geçir
             const cleanVal = cleanContent(rawVal);
-
-            // Spam kilidi
             isWaiting = true;
             postBtn.disabled = true;
             inputField.value = "";
 
-            // Firebase'e gönder
             notesRef.push({
                 text: cleanVal,
                 sender: mySessionId,
@@ -173,21 +225,22 @@
                     isWaiting = false;
                     postBtn.disabled = false;
                     inputField.focus();
-                }, 3000); // 3 saniye spam koruması
+                }, 3000);
             });
         }
 
-        // Tıklama ve Enter Tuşu
         postBtn.addEventListener('click', publishNote);
         inputField.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') publishNote();
         });
 
-        // Veritabanından Canlı Veri Okuma (Tüm sitelere anında düşen kısım)
-        // limitToLast(30) ile sadece son 30 mesajı çekiyoruz ki site kasmasın
+       
         notesRef.orderByChild('timestamp').limitToLast(30).on('child_added', (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
+
+            
+            if (Date.now() - data.timestamp > twelveHoursInMs) return;
 
             const isMe = data.sender === mySessionId;
             const bubble = document.createElement('div');
@@ -196,20 +249,18 @@
             
             feedArea.appendChild(bubble);
             
-            // Otomatik en alta kaydır
             setTimeout(() => {
                 feedArea.scrollTop = feedArea.scrollHeight;
             }, 50);
         });
     }
 
-    // 4. FIREBASE KÜTÜPHANELERİNİ DIŞARIDAN GİZLİCE ÇEKME (Okullar Çakmasın Diye)
+    
     function loadFirebaseAndInit() {
         if (typeof firebase !== 'undefined') {
             initSystem();
             return;
         }
-        
         const scriptApp = document.createElement('script');
         scriptApp.src = "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js";
         document.head.appendChild(scriptApp);
@@ -219,9 +270,7 @@
             scriptDb.src = "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js";
             document.head.appendChild(scriptDb);
             
-            scriptDb.onload = () => {
-                initSystem();
-            };
+            scriptDb.onload = () => { initSystem(); };
         };
     }
 

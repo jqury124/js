@@ -1,6 +1,5 @@
 (function() {
 
-    
     const styles = `
         #custom-network-bar {
             width: 100%;
@@ -117,61 +116,6 @@
             border-color: #ff0055;
             transform: scale(1.1);
         }
-        #floating-wrapper {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 999999;
-            transition: all 0.4s ease;
-        }
-        #floating-wrapper.hide-animated {
-            transform: scale(0);
-            opacity: 0;
-        }
-        #floating-agarlive-btn {
-            background: linear-gradient(135deg, #ff0055, #ffaa00);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-weight: 800;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        #floating-agarlive-btn:hover {
-            transform: scale(1.1) translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 170, 0, 0.6);
-            color: white;
-        }
-        .float-close-btn {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #222;
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-        .float-close-btn:hover {
-            background: #ff0055;
-            transform: scale(1.2);
-        }
     `;
 
     const bannerHtml = `
@@ -180,7 +124,6 @@
             <div class="divider"></div>
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
-                <a href="https://agarlive.site" target="_blank" class="net-btn"><span>⚽</span> AGARIO</a>
                 <a href="https://edujojo.live/" target="_blank" class="net-btn green"><span>🚀</span> Edu Live</a>
                 <a href="https://edujojo.website/" target="_blank" class="net-btn orange"><span>🔥</span> Edu Web</a>
                 <a href="https://edujojo.site" target="_blank" class="net-btn blue"><span>🎮</span> Edu Site</a> 
@@ -195,15 +138,8 @@
         </div>
     `;
 
-    const floatingHtml = `
-        <div id="floating-wrapper">
-            <div class="float-close-btn" id="close-floating" title="Kapat">✖</div>
-            <a id="floating-agarlive-btn" href="https://agarlive.site/" target="_blank"><span>⚔️</span> AGAR SITE</a>
-        </div>
-    `;
-
     function buildNetworkBar() {
-       
+        
         if (!document.getElementById('edujojo-network-styles')) {
             const styleElement = document.createElement('style');
             styleElement.id = 'edujojo-network-styles';
@@ -211,18 +147,11 @@
             document.head.appendChild(styleElement);
         }
 
-        
         const targetDiv = document.getElementById("network-bar");
         if (targetDiv && !document.getElementById('custom-network-bar')) {
             targetDiv.innerHTML = bannerHtml;
         }
 
-       
-        if (!document.getElementById('floating-wrapper')) {
-            document.body.insertAdjacentHTML('beforeend', floatingHtml);
-        }
-
-       
         const topBarClose = document.getElementById('close-topbar');
         if (topBarClose) {
             topBarClose.addEventListener('click', function() {
@@ -233,21 +162,8 @@
                 }
             });
         }
-
-        const floatingClose = document.getElementById('close-floating');
-        if (floatingClose) {
-            floatingClose.addEventListener('click', function(e) {
-                e.preventDefault();
-                const floatBtn = document.getElementById('floating-wrapper');
-                if (floatBtn) {
-                    floatBtn.classList.add('hide-animated');
-                    setTimeout(() => floatBtn.style.display = 'none', 300);
-                }
-            });
-        }
     }
 
-   
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', buildNetworkBar);
     } else {

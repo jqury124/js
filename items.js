@@ -176,7 +176,7 @@
 
     const bannerHtml = `
         <div id="custom-network-bar">
-            <div class="brand-logo" onclick="window.scrollTo(0,0)">ALT Sites »</div>
+            <div class="brand-logo" onclick="window.scrollTo(0,0)">New Sites »</div>
             <div class="divider"></div>
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>

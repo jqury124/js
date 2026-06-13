@@ -1,5 +1,5 @@
 (function() {
-    // 1. KÖTÜ KELİME FİLTRESİ
+    //anlıksikiştesti
     const blockList = [
         "fuck", "shit", "bitch", "asshole", "dick", "pussy", "cunt", "slut", 
         "whore", "fag", "faggot", "nigger", "nigga", "porn", "sex", "cock", 
@@ -24,7 +24,7 @@
         localStorage.setItem('edu_stream_nick', myNick);
     }
 
-    // 2. GÖRÜNÜM (CSS VE HTML)
+    
     const styles = `
         #edu-stream-wrap {
             position: fixed;
@@ -67,12 +67,12 @@
         }
         
         #edu-stream-open-btn.show {
-            /* Buton ekrandayken bu animasyon sonsuza kadar çalışır */
+           
             animation: heartbeat 2s infinite; 
         }
 
         #edu-stream-open-btn:hover {
-            animation: none; /* Üzerine gelince atış dursun, sadece büyüsün */
+            animation: none;  
             transform: scale(1.1) translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 210, 255, 0.6);
         }
@@ -214,13 +214,13 @@
         </div>
     `;
 
-    // 3. SİSTEM DEĞİŞKENLERİ
+   
     let isFirebaseLoaded = false;
     let isFirebaseInit = false;
     let mySessionId = Math.random().toString(36).substr(2, 9);
     let notesRef;
 
-    // 4. FIREBASE BAĞLANTISINI KUR VE DİNLEMEYE BAŞLA
+   
     function initFirebaseLogic() {
         if (!isFirebaseInit) {
             const firebaseConfig = {
@@ -274,7 +274,7 @@
         });
     }
 
-    // 5. ARAYÜZÜ OLUŞTUR VE BEKLE
+    
     function setupUI() {
         let targetDiv = document.getElementById("edu-live-stream-container");
         if (!targetDiv) {
@@ -300,7 +300,7 @@
         feedArea.addEventListener('contextmenu', (e) => { e.preventDefault(); });
         feedArea.addEventListener('copy', (e) => { e.preventDefault(); });
 
-        // TIKLAMA: CHAT'İ AÇ (FIREBASE'E BAĞLAN)
+        
         openBtn.addEventListener('click', () => {
             openBtn.classList.remove('show');
             openBtn.style.display = 'none';
@@ -327,18 +327,18 @@
             }
         });
 
-        // TIKLAMA: CHAT'İ KAPAT (FIREBASE'DEN KOP)
+       
         closeBtn.addEventListener('click', () => {
             wrapBox.style.display = 'none';
             openBtn.style.display = 'flex';
-            openBtn.classList.add('show'); // Kalp atışı animasyonunu tekrar başlat
+            openBtn.classList.add('show');  
             
             if (isFirebaseLoaded && isFirebaseInit) {
                 firebase.database().goOffline();
             }
         });
 
-        // Yeni Veri Ekleme (POST işlemi)
+       
         function publishNote() {
             if (!isFirebaseInit) return;
             const rawVal = inputField.value.trim();

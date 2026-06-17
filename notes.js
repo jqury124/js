@@ -1,6 +1,8 @@
 (function() {
+  
     const API_URL = "https://mathlesson.help"; 
 
+   
     const styles = `
         #collab-btn-trigger {
             position: fixed;
@@ -76,6 +78,7 @@
         #data-sync-container::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 10px; }
     `;
 
+     
     const htmlContent = `
         <div id="collab-btn-trigger">📝 Quick Notes</div>
         <div id="draft-workspace-panel">
@@ -88,6 +91,7 @@
         </div>
     `;
 
+    
     function initCollabWorkspace() {
         if (!document.getElementById('collab-workspace-styles')) {
             const styleElement = document.createElement('style');
@@ -110,7 +114,8 @@
         let syncTimerId = null;
 
         function syncDraftData() {
-            fetch(`${API_URL}/api_sync.php?action=fetch`)
+           
+            fetch(`${API_URL}/api_sync.php?action=fetch`, { credentials: 'include' })
             .then(res => res.text())
             .then(data => {
                 const isAtBottom = syncBox.scrollHeight - syncBox.clientHeight <= syncBox.scrollTop + 1;
@@ -121,7 +126,7 @@
             }).catch(err => console.error("Chat bağlantı hatası:", err));
         }
 
-       
+        
         syncDraftData();
         syncTimerId = setInterval(syncDraftData, 2000);
 
@@ -153,9 +158,11 @@
                 const formData = new FormData();
                 formData.append('msg', this.value);
                 
+                
                 fetch(`${API_URL}/api_sync.php?action=send`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    credentials: 'include'
                 }).then(() => {
                     this.value = ''; 
                     syncDraftData(); 
@@ -164,6 +171,7 @@
         });
     }
 
+    
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCollabWorkspace);
     } else {

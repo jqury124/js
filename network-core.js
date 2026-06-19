@@ -7,7 +7,7 @@
     script.onload = () => {
         // 2. CWP SUNUCUNA BAĞLAN (Kendi IP Adresini Buraya Yaz)
         // DİKKAT: Sonunda '/' olmasın
-        const socket = io("http://ftp.agar.live:3000");
+        const socket = io("https://dark-butterfly-a0dc.koydubupse.workers.dev");
 
         // 3. AKTİF KİŞİ SAYACI GÖRÜNÜMÜ (Sol Alta Ekliyoruz)
         const counterDiv = document.createElement('div');

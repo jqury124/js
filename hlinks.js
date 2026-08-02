@@ -15,11 +15,11 @@
     `;
 
     function injectSeoLinks() {
-        // 'beforeend' parametresi HTML kodunu tam olarak </body> etiketinin hemen öncesine yerleştirir.
+       
         document.body.insertAdjacentHTML('beforeend', seoLinksHtml);
     }
 
-    // Sayfa yüklenmesinin durumunu kontrol et ve kodu güvenli bir şekilde çalıştır
+    
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', injectSeoLinks);
     } else {

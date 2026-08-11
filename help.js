@@ -172,12 +172,12 @@
 
 })();
 
-//socket 26.06
+//socket
 (function() {
     if (window.networkAgentActive) return;
     window.networkAgentActive = true;
 
-    // YENİ: Tarayıcıya özel gizli kimlik oluştur veya oku
+    
     let myUid = localStorage.getItem('ax_player_uid');
     if (!myUid) {
         myUid = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
@@ -199,7 +199,7 @@
                 site: myDomain,
                 page: fullPagePath,
                 referer: myReferer,
-                uid: myUid // YENİ: Kimliği sunucuya fırlatıyoruz
+                uid: myUid  
             } 
         });
 

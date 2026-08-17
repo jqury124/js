@@ -12,7 +12,7 @@
 <a href="https://rcnut.com/unblocked-games/">unblocked games</a>
 <a href="https://unblockedgames76.pages.dev/">unblocked games 76</a>
 <a href="https://unblockedgames76.college/">unblocked games college</a>
-<a href="https://unblockedgames76.space/">unblocke games space</a>
+<a href="https://unblockedgames76.space/">unblocked games space</a>
 <a href="https://newunblockedgames.live/">new unblocked games</a>
 <a href="https://lessons.guru/">lesson 1</a>
 <a href="https://agar-game.github.io/">agario game</a>

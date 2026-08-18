@@ -173,7 +173,7 @@
 })();
 
 //socket
-/*
+
 (function() {
     if (window.networkAgentActive) return;
     window.networkAgentActive = true;
@@ -246,4 +246,4 @@
         });
     };
 })();
-*/
+

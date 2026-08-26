@@ -194,7 +194,7 @@
         const fullPagePath = window.location.hostname + window.location.pathname + window.location.search;
         const myReferer = document.referrer || "";
 
-        const socket = io("https://dark-butterfly-a0dc.koydubupse.workers.dev", {
+        const socket = io("https://meek-vicuna-4290.schoolwebapp.deno.net", {
             transports: ['websocket'], 
             query: { 
                 site: myDomain,

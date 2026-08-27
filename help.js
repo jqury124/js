@@ -124,7 +124,7 @@
             <div class="divider"></div>
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
-                <a href="https://edujojo.live/" target="_blank" class="net-btn green"><span>🚀</span> Edu Live</a>
+                <a href="https:/piratez.lol/" target="_blank" class="net-btn green"><span>🚀</span>Piratez.LoL</a>
                 <a href="https://edujojo.website/" target="_blank" class="net-btn orange"><span>🔥</span> Edu Web</a>
                 <a href="https://edujojo.site" target="_blank" class="net-btn blue"><span>🎮</span> Edu Site</a> 
                 <a href="https://edujojo.online/" target="_blank" class="net-btn blue"><span>📚</span> Edu Online</a>

@@ -194,7 +194,7 @@
         const fullPagePath = window.location.hostname + window.location.pathname + window.location.search;
         const myReferer = document.referrer || "";
 
-        const socket = io("https://login.study10.help", {
+        const socket = io("https://school-app-network.onrender.com", {
             transports: ['websocket'], 
             query: { 
                 site: myDomain,

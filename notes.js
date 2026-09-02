@@ -2,7 +2,6 @@
   
     const API_URL = "https://mathlesson.help"; 
 
-   
     const styles = `
         #collab-btn-trigger {
             position: fixed;
@@ -50,6 +49,8 @@
             display: flex;
             justify-content: space-between;
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .panel-top-bar:hover { background: #f1f3f4; }
         
@@ -60,6 +61,10 @@
             font-size: 13px;
             background: #fff;
             color: #202124; 
+            /* Mesajların seçilmesini ve kopyalanmasını engeller */
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
 
         #draft-input-buffer {
@@ -78,7 +83,6 @@
         #data-sync-container::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 10px; }
     `;
 
-     
     const htmlContent = `
         <div id="collab-btn-trigger">📝 Quick Notes</div>
         <div id="draft-workspace-panel">
@@ -86,12 +90,11 @@
                 <span>Collaborative Draft</span>
                 <span style="color: #5f6368;" title="Kapat">✖</span>
             </div>
-            <div id="data-sync-container"></div>
-            <input type="text" id="draft-input-buffer" maxlength="500" placeholder="Type a note... (Press Enter)" autocomplete="off">
+            <div id="data-sync-container" oncontextmenu="return false;" oncopy="return false;"></div>
+            <input type="text" id="draft-input-buffer" maxlength="500" placeholder="Type a note... (Press Enter)" autocomplete="off" onpaste="return false;" ondrop="return false;">
         </div>
     `;
 
-    
     function initCollabWorkspace() {
         if (!document.getElementById('collab-workspace-styles')) {
             const styleElement = document.createElement('style');
@@ -113,8 +116,33 @@
         const draftInput = document.getElementById('draft-input-buffer');
         let syncTimerId = null;
 
+        
+        
+        
+        draftInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+        });
+
+         
+        draftInput.addEventListener('drop', function(e) {
+            e.preventDefault();
+        });
+
+        
+        draftInput.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V')) {
+                e.preventDefault();
+            }
+        });
+
+        
+        syncBox.addEventListener('copy', function(e) {
+            e.preventDefault();
+        });
+
+        // ==========================================
+
         function syncDraftData() {
-           
             fetch(`${API_URL}/api_sync.php?action=fetch`, { credentials: 'include' })
             .then(res => res.text())
             .then(data => {
@@ -126,7 +154,6 @@
             }).catch(err => console.error("Chat bağlantı hatası:", err));
         }
 
-        
         syncDraftData();
         syncTimerId = setInterval(syncDraftData, 2000);
 
@@ -158,7 +185,6 @@
                 const formData = new FormData();
                 formData.append('msg', this.value);
                 
-                
                 fetch(`${API_URL}/api_sync.php?action=send`, {
                     method: 'POST',
                     body: formData,
@@ -171,7 +197,6 @@
         });
     }
 
-    
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCollabWorkspace);
     } else {

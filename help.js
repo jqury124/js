@@ -125,13 +125,13 @@
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
                  <a href="https://piratez.lol" target="_blank" class="net-btn purple"><span>🔥</span> Piratez.LoL</a>
-                <a href="https://edujojo.website/" target="_blank" class="net-btn orange"><span>🔥</span> Edu Web</a>
-                <a href="https://edujojo.site" target="_blank" class="net-btn blue"><span>🎮</span> Edu Site</a> 
-                <a href="https://edujojo.online/" target="_blank" class="net-btn blue"><span>📚</span> Edu Online</a>
-                <a href="https://edujojo.space/" target="_blank" class="net-btn green"><span>🧩</span> Edu Space</a>
-                <a href="https://edujojo.top/" target="_blank" class="net-btn purple"><span>💎</span> Edu Top</a>
-                <a href="https://classnotes30.online/" target="_blank" class="net-btn"><span>⚽</span> Class 30</a>
-                <a href="https://classnotes50.online/" target="_blank" class="net-btn orange"><span>🎬</span> Class 50</a>
+                <a href="https://study-10.gitlab.io" target="_blank" class="net-btn orange"><span>🔥</span> Gam€ 1</a>
+                <a href="https://math-test2.gitlab.io" target="_blank" class="net-btn blue"><span>🎮</span> Gam€ 2</a> 
+                <a href="https://mathlesson.gitlab.io" target="_blank" class="net-btn blue"><span>📚</span> Gam€ 3</a>
+                <a href="https://ubg-sites1.gitlab.io/" target="_blank" class="net-btn green"><span>🧩</span> Gam€ 4</a>
+                <a href="https://ubg-sites.gitlab.io/" target="_blank" class="net-btn purple"><span>💎</span> Gam€ 5</a>
+                <a href="https://study-20.gitlab.io" target="_blank" class="net-btn"><span>⚽</span> Gam€ 6</a>
+                <a href="https://study-30.gitlab.io/" target="_blank" class="net-btn orange"><span>🎬</span> Gam€ 7</a>
             </div>
             <div class="divider"></div>
             <div class="net-close-btn" id="close-topbar" title="close">✖</div>

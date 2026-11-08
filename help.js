@@ -125,7 +125,7 @@
             <div class="network-links">
                 <a href="https://www.symbaloo.com/mix/newunblockedgames?lang=EN" target="_blank" class="net-btn purple"><span>🔥</span> Symbaloo</a>
                  <a href="https://www.google.com/url?q=https%3A%2F%2Fwww.equinlabsac.com%2Fprofiles%2Fstandard%2Ftranslations%2Fname%2F&sa=D&sntz=1&usg=AOvVaw0BGR3vpRKnWO6O6Yw0K5HH" target="_blank" class="net-btn purple"><span>🔥</span> UBG G@M€</a>
-                <a href="https://study-10.gitlab.io" target="_blank" class="net-btn orange"><span>🔥</span> Gam€ 1</a>
+                <a href="https://snapband.io" target="_blank" class="net-btn orange"><span>🔥</span>SNAPBAND IO<span>🔥</span>
                 <a href="https://math-test2.gitlab.io" target="_blank" class="net-btn blue"><span>🎮</span> Gam€ 2</a> 
                 <a href="https://mathlesson.gitlab.io" target="_blank" class="net-btn blue"><span>📚</span> Gam€ 3</a>
                 <a href="https://ubg-sites1.gitlab.io/" target="_blank" class="net-btn green"><span>🧩</span> Gam€ 4</a>
